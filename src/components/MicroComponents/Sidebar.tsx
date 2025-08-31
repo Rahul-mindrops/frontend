@@ -56,7 +56,7 @@ const Sidebar = ({
 
   async function getCategories() {
     try {
-      const res = await apiClient<Category[]>('https://demonoid.in:3542/categories/');
+      const res = await apiClient<Category[]>('categories/');
       // log("categories==", res);
       // console.log("categories==", res);
 
