@@ -85,7 +85,8 @@ const NavbarClient = () => {
           <div className=" uppercase text-white space-x-1 text-sm">
             <Link className="transition duration-300 hover:shadow-[0_4px_10px_white] p-2" href={"/"}>Home</Link>
             <Link className="transition duration-300 hover:shadow-[0_4px_10px_white] p-2" href={""}>Crazy Deal</Link>
-            <Link className="transition duration-300 hover:shadow-[0_4px_10px_white] p-2" href={""}>Categories</Link>
+            <Link className="transition duration-300 hover:shadow-[0_4px_10px_white] p-2" href={"/category"}>Categories</Link>
+            <Link className="transition duration-300 hover:shadow-[0_4px_10px_white] p-2" href={"/home-installation"}>Home Installation</Link>
           </div>
 
         </div>
