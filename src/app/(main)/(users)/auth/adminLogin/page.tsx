@@ -42,32 +42,47 @@ const AdminLoginPage = () => {
         setError("");
 
         try {
-            // const response = await api.post("/auth/login", formData); // Interceptor adds CSRF header
+            const response = await apiClient<any>('admin/login', { 
+                method: 'POST', 
+                body: { ...formData } 
+            });
 
-            // const response = await api.post("http://localhost:3000/auth/login", formData); // Interceptor adds CSRF header
-            const response = await apiClient<Admin[]>('admin/login', { method: 'POST', body: { ...formData } });
-
-            // console.log("Login Response: ", response);
+            console.log("Login Response: ", response);
 
             if (response.message === "Login successful") {
-                await new Promise((resolve) => setTimeout(resolve, 500));
-                setUser(response.admin.username);
-                setCheck(!check);
-                toast.success("Logged in successfully!");
-                if (response.admin.role === "ADMIN" || response.admin.role === "SUPER_ADMIN") {
-                    navigate.push("/admin/dashboard");
+                // Check if user has 2FA enabled
+                if (response.requires2FA) {
+                    // User has 2FA enabled, redirect to OTP verification
+                    toast.success("Password verified! Please enter your 2FA code.");
+                    navigate.push(`/auth/verify-2fa?username=${formData.username}`);
+                } else if (response.setup2FA) {
+                    // User needs to setup 2FA for the first time
+                    toast.info("Please setup Two-Factor Authentication");
+                    navigate.push(`/auth/setup-2fa?username=${formData.username}`);
                 } else {
-                    navigate.push("/");
-                    console.log("your are in")
+                    // No 2FA required, login directly
+                    await new Promise((resolve) => setTimeout(resolve, 500));
+                    const adminData = response.admin;
+                    setUser({
+                        id: adminData.username,
+                        email: adminData.email || `${adminData.username}@eventpro.com`,
+                        role: adminData.role,
+                        name: adminData.username,
+                    });
+                    setCheck(!check);
+                    toast.success("Logged in successfully!");
+                    
+                    if (adminData.role === "ADMIN" || adminData.role === "SUPER_ADMIN") {
+                        navigate.push("/admin/dashboard");
+                    } else {
+                        navigate.push("/");
+                    }
                 }
             }
-        } catch (err) {
-            console.log(err)
-            toast.error("Please Enter Correct Username Password!");
-
-            // setError(
-            //   err?.response?.data?.message || "Login failed. Please try again."
-            // );
+        } catch (err: any) {
+            console.log(err);
+            toast.error(err?.message || "Please Enter Correct Username Password!");
+            setError(err?.message || "Login failed. Please try again.");
         } finally {
             setLoading(false);
         }

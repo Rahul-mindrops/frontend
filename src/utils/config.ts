@@ -1,4 +1,4 @@
-export const baseUrl = "https://demonoid.in:3542";
+export const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://demonoid.in:3542/api";
 
 export const apiConfig = {
   baseUrl,

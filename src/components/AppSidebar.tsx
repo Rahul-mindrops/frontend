@@ -151,26 +151,25 @@ const items = [
 ];
 
 export function AppSidebar() {
-
   return (
-    <Sidebar className="bg-black">
-      <SidebarContent className="bg-black text-white">
+    <Sidebar className="bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700">
+      <SidebarContent className="bg-white dark:bg-gray-900">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-white text-xl my-4 gap-4 flex items-center">
-            <Link href={"/admin/dashboard"}>
+          <SidebarGroupLabel className="text-gray-900 dark:text-white text-xl my-6 gap-4 flex items-center px-4">
+            <Link href={"/admin/dashboard"} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <Image
                 src="/LOGO.png"
                 alt="logo"
                 width={40}
                 height={40}
-                className=""
+                className="rounded-lg shadow-sm"
                 loading="eager"
               />
+              <span className="font-bold text-lg">Demonoid</span>
             </Link>
-            Demoniod
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-2 mt-8 overflow-x-hidden">
+            <SidebarMenu className="space-y-1 mt-4 overflow-x-hidden px-2">
               {items.map((item) => (
                 <Collapsible
                   key={item.title}
@@ -179,17 +178,19 @@ export function AppSidebar() {
                 >
                   <SidebarMenuItem>
                     <CollapsibleTrigger asChild>
-                      <SidebarMenuButton className="flex items-center justify-between py-6 relative">
-                        <div className="flex items-center gap-2 w-full">
-                          <item.icon />
-                          <span>{item.title}</span>
+                      <SidebarMenuButton className="flex items-center justify-between py-3 px-3 relative hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors group">
+                        <div className="flex items-center gap-3 w-full">
+                          <div className="p-1.5 rounded-md bg-gray-100 dark:bg-gray-800 group-hover:bg-gray-200 dark:group-hover:bg-gray-700 transition-colors">
+                            <item.icon className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                          </div>
+                          <span className="text-gray-700 dark:text-gray-300 font-medium">{item.title}</span>
                         </div>
 
                         {item.subItems ? (
-                          <>
-                            <ChevronDown className="group-open:hidden" />
-                            <ChevronUp className="hidden group-open:block" />
-                          </>
+                          <div className="flex items-center">
+                            <ChevronDown className="w-4 h-4 text-gray-400 group-open:hidden" />
+                            <ChevronUp className="w-4 h-4 text-gray-400 hidden group-open:block" />
+                          </div>
                         ) : (
                           <Link
                             href={item.url}
@@ -202,11 +203,14 @@ export function AppSidebar() {
 
                   {item.subItems && (
                     <CollapsibleContent>
-                      <SidebarMenu className="ml-6 space-y-2">
+                      <SidebarMenu className="ml-8 space-y-1 mt-2">
                         {item.subItems.map((subItem) => (
                           <SidebarMenuItem key={subItem.title}>
                             <SidebarMenuButton asChild>
-                              <Link href={subItem.url}>
+                              <Link 
+                                href={subItem.url}
+                                className="flex items-center py-2 px-3 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+                              >
                                 <span>{subItem.title}</span>
                               </Link>
                             </SidebarMenuButton>

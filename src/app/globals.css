@@ -6,9 +6,19 @@
 @import 'aos/dist/aos.css';
 
 html body {
-  background-color: #111;
-  color: whitesmoke;
   font-family: GeistSans, "GeistSans Fallback", sans-serif;
+}
+
+/* Light theme */
+html:not(.dark) body {
+  background-color: #ffffff;
+  color: #111827;
+}
+
+/* Dark theme */
+html.dark body {
+  background-color: #111827;
+  color: #f9fafb;
 }
 
 .loader {

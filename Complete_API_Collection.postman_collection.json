@@ -1,0 +1,1857 @@
+{
+	"info": {
+		"_postman_id": "complete-demonoid-api",
+		"name": "Complete Demonoid API Collection",
+		"description": "Complete API collection with Public, User (JWT), and Admin (JWT) routes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3542",
+			"type": "string"
+		},
+		{
+			"key": "user_token",
+			"value": "",
+			"type": "string",
+			"description": "User JWT token from OTP verification"
+		},
+		{
+			"key": "admin_token",
+			"value": "",
+			"type": "string",
+			"description": "Admin JWT token from admin login"
+		}
+	],
+	"item": [
+		{
+			"name": "1️⃣ PUBLIC ROUTES (No Auth)",
+			"item": [
+				{
+					"name": "Authentication",
+					"item": [
+						{
+							"name": "OTP Authentication (Phone)",
+							"item": [
+								{
+									"name": "Send OTP to Phone",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"if (pm.response.code === 200) {",
+													"    console.log('OTP sent successfully');",
+													"    console.log('OTP:', pm.response.json().otp);",
+													"}"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"phone\": \"9876543210\"\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/api/otp/send-otp",
+											"host": ["{{base_url}}"],
+											"path": ["api", "otp", "send-otp"]
+										}
+									}
+								},
+								{
+									"name": "Verify OTP & Login",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"if (pm.response.code === 200) {",
+													"    var jsonData = pm.response.json();",
+													"    pm.environment.set('user_token', jsonData.token);",
+													"    console.log('User Token:', jsonData.token);",
+													"}"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"phone\": \"9876543210\",\n  \"otp\": \"123456\"\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/api/otp/verify-otp",
+											"host": ["{{base_url}}"],
+											"path": ["api", "otp", "verify-otp"]
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Traditional Authentication (Email/Password)",
+							"item": [
+								{
+									"name": "Register User",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"if (pm.response.code === 201) {",
+													"    console.log('User registered successfully');",
+													"}"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"phone\": \"1234567890\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\"\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/api/auth/register",
+											"host": ["{{base_url}}"],
+											"path": ["api", "auth", "register"]
+										}
+									}
+								},
+								{
+									"name": "Login User (Email/Password)",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"if (pm.response.code === 200) {",
+													"    var jsonData = pm.response.json();",
+													"    pm.environment.set('user_token', jsonData.token);",
+													"    console.log('User Token:', jsonData.token);",
+													"}"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\"\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/api/auth/login",
+											"host": ["{{base_url}}"],
+											"path": ["api", "auth", "login"]
+										}
+									}
+								},
+								{
+									"name": "Send OTP to Email",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"if (pm.response.code === 200) {",
+													"    var jsonData = pm.response.json();",
+													"    console.log('OTP sent to email');",
+													"    console.log('OTP:', jsonData.otp);",
+													"}"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"email\": \"john.doe@example.com\"\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/api/auth/send-otp",
+											"host": ["{{base_url}}"],
+											"path": ["api", "auth", "send-otp"]
+										}
+									}
+								},
+								{
+									"name": "Verify Email OTP",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"if (pm.response.code === 200) {",
+													"    console.log('Email OTP verified successfully');",
+													"}"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"otp\": \"1234\"\n}"
+										},
+										"url": {
+											"raw": "{{base_url}}/api/auth/verify-otp",
+											"host": ["{{base_url}}"],
+											"path": ["api", "auth", "verify-otp"]
+										}
+									}
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Categories",
+					"item": [
+						{
+							"name": "Get All Categories",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/categories",
+									"host": ["{{base_url}}"],
+									"path": ["api", "categories"]
+								}
+							}
+						},
+						{
+							"name": "Get Category by ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/categories/1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "categories", "1"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Products",
+					"item": [
+						{
+							"name": "Get All Products",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/products",
+									"host": ["{{base_url}}"],
+									"path": ["api", "products"]
+								}
+							}
+						},
+						{
+							"name": "Get Product by ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/products/1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "products", "1"]
+								}
+							}
+						},
+						{
+							"name": "Get Product by Slug",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/products/slug/sample-product",
+									"host": ["{{base_url}}"],
+									"path": ["api", "products", "slug", "sample-product"]
+								}
+							}
+						},
+						{
+							"name": "Get Products by Category",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/products/category/1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "products", "category", "1"]
+								}
+							}
+						},
+						{
+							"name": "Get Best Sellers",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/products/bestsellers",
+									"host": ["{{base_url}}"],
+									"path": ["api", "products", "bestsellers"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Carousel",
+					"item": [
+						{
+							"name": "Get All Carousel Items",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/carousel",
+									"host": ["{{base_url}}"],
+									"path": ["api", "carousel"]
+								}
+							}
+						},
+						{
+							"name": "Get Carousel Item by ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/carousel/1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "carousel", "1"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Hero Section",
+					"item": [
+						{
+							"name": "Get All Hero Videos",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/hero",
+									"host": ["{{base_url}}"],
+									"path": ["api", "hero"]
+								}
+							}
+						},
+						{
+							"name": "Get Hero Videos by Platform",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/hero/website",
+									"host": ["{{base_url}}"],
+									"path": ["api", "hero", "website"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Secondary Media",
+					"item": [
+						{
+							"name": "Get Secondary Media",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/secondary",
+									"host": ["{{base_url}}"],
+									"path": ["api", "secondary"]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "2️⃣ USER ROUTES (User JWT Required)",
+			"item": [
+			{
+				"name": "Cart Management",
+				"item": [
+					{
+						"name": "Add to Cart",
+						"request": {
+							"method": "POST",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"body": {
+								"mode": "raw",
+								"raw": "{\n  \"user_id\": 15,\n  \"product_id\": 1,\n  \"quantity\": 2\n}"
+							},
+							"url": {
+								"raw": "{{base_url}}/api/user/cart",
+								"host": ["{{base_url}}"],
+								"path": ["api", "user", "cart"]
+							}
+						}
+					},
+					{
+						"name": "Get Cart Items",
+						"request": {
+							"method": "GET",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								}
+							],
+							"url": {
+								"raw": "{{base_url}}/api/user/cart/15",
+								"host": ["{{base_url}}"],
+								"path": ["api", "user", "cart", "15"]
+							}
+						}
+					},
+					{
+						"name": "Get Cart Summary",
+						"request": {
+							"method": "GET",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								}
+							],
+							"url": {
+								"raw": "{{base_url}}/api/user/cart/summary/15",
+								"host": ["{{base_url}}"],
+								"path": ["api", "user", "cart", "summary", "15"]
+							}
+						}
+					},
+					{
+						"name": "Update Cart Item Quantity",
+						"request": {
+							"method": "PUT",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"body": {
+								"mode": "raw",
+								"raw": "{\n  \"quantity\": 5\n}"
+							},
+							"url": {
+								"raw": "{{base_url}}/api/user/cart/1",
+								"host": ["{{base_url}}"],
+								"path": ["api", "user", "cart", "1"]
+							}
+						}
+					},
+					{
+						"name": "Remove from Cart",
+						"request": {
+							"method": "DELETE",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								}
+							],
+							"url": {
+								"raw": "{{base_url}}/api/user/cart/1",
+								"host": ["{{base_url}}"],
+								"path": ["api", "user", "cart", "1"]
+							}
+						}
+					},
+					{
+						"name": "Clear Cart",
+						"request": {
+							"method": "DELETE",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								}
+							],
+							"url": {
+								"raw": "{{base_url}}/api/user/cart/clear/15",
+								"host": ["{{base_url}}"],
+								"path": ["api", "user", "cart", "clear", "15"]
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Wishlist Management",
+				"item": [
+					{
+						"name": "Add to Wishlist",
+						"request": {
+							"method": "POST",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"body": {
+								"mode": "raw",
+								"raw": "{\n  \"user_id\": 15,\n  \"product_id\": 1\n}"
+							},
+							"url": {
+								"raw": "{{base_url}}/api/user/wishlist",
+								"host": ["{{base_url}}"],
+								"path": ["api", "user", "wishlist"]
+							}
+						}
+					},
+					{
+						"name": "Get Wishlist Items",
+						"request": {
+							"method": "GET",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								}
+							],
+							"url": {
+								"raw": "{{base_url}}/api/user/wishlist/15",
+								"host": ["{{base_url}}"],
+								"path": ["api", "user", "wishlist", "15"]
+							}
+						}
+					},
+					{
+						"name": "Remove from Wishlist",
+						"request": {
+							"method": "DELETE",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								}
+							],
+							"url": {
+								"raw": "{{base_url}}/api/user/wishlist/1",
+								"host": ["{{base_url}}"],
+								"path": ["api", "user", "wishlist", "1"]
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Shipping Address",
+				"item": [
+					{
+						"name": "Add Shipping Address",
+						"request": {
+							"method": "POST",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"body": {
+								"mode": "raw",
+								"raw": "{\n  \"user_id\": 15,\n  \"address_line\": \"123 Main Street\",\n  \"city\": \"Mumbai\",\n  \"state\": \"Maharashtra\",\n  \"postal_code\": \"400001\",\n  \"is_default\": true,\n  \"longitude\": 72.8777,\n  \"latitude\": 19.0760\n}"
+							},
+							"url": {
+								"raw": "{{base_url}}/api/user/shipping-address",
+								"host": ["{{base_url}}"],
+								"path": ["api", "user", "shipping-address"]
+							}
+						}
+					},
+					{
+						"name": "Get Shipping Addresses",
+						"request": {
+							"method": "GET",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								}
+							],
+							"url": {
+								"raw": "{{base_url}}/api/user/shipping-address/15",
+								"host": ["{{base_url}}"],
+								"path": ["api", "user", "shipping-address", "15"]
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Order Management",
+				"item": [
+					{
+						"name": "Create Order from Cart",
+						"request": {
+							"method": "POST",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"body": {
+								"mode": "raw",
+								"raw": "{\n  \"user_id\": 15,\n  \"shipping_address_id\": 1,\n  \"billing_address_id\": 1,\n  \"notes\": \"Please deliver during evening hours\"\n}"
+							},
+							"url": {
+								"raw": "{{base_url}}/api/orders/create",
+								"host": ["{{base_url}}"],
+								"path": ["api", "orders", "create"]
+							}
+						}
+					},
+					{
+						"name": "Get User Orders",
+						"request": {
+							"method": "GET",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								}
+							],
+							"url": {
+								"raw": "{{base_url}}/api/orders/user/15?limit=20&offset=0",
+								"host": ["{{base_url}}"],
+								"path": ["api", "orders", "user", "15"],
+								"query": [
+									{
+										"key": "status",
+										"value": "PENDING",
+										"disabled": true
+									},
+									{
+										"key": "payment_status",
+										"value": "PAID",
+										"disabled": true
+									},
+									{
+										"key": "limit",
+										"value": "20"
+									},
+									{
+										"key": "offset",
+										"value": "0"
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "Get Order by ID",
+						"request": {
+							"method": "GET",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								}
+							],
+							"url": {
+								"raw": "{{base_url}}/api/orders/1",
+								"host": ["{{base_url}}"],
+								"path": ["api", "orders", "1"]
+							}
+						}
+					},
+					{
+						"name": "Cancel Order",
+						"request": {
+							"method": "POST",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"body": {
+								"mode": "raw",
+								"raw": "{\n  \"reason\": \"Changed my mind\"\n}"
+							},
+							"url": {
+								"raw": "{{base_url}}/api/orders/1/cancel",
+								"host": ["{{base_url}}"],
+								"path": ["api", "orders", "1", "cancel"]
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Payment Processing",
+				"item": [
+					{
+						"name": "Create Payment Order",
+						"request": {
+							"method": "POST",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"body": {
+								"mode": "raw",
+								"raw": "{\n  \"user_id\": 15,\n  \"amount\": 1500.00,\n  \"currency\": \"INR\",\n  \"receipt\": \"receipt_order_1\",\n  \"notes\": {\n    \"order_id\": 1\n  }\n}"
+							},
+							"url": {
+								"raw": "{{base_url}}/api/payment/create-order",
+								"host": ["{{base_url}}"],
+								"path": ["api", "payment", "create-order"]
+							}
+						}
+					},
+					{
+						"name": "Verify Payment",
+						"request": {
+							"method": "POST",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"body": {
+								"mode": "raw",
+								"raw": "{\n  \"razorpay_order_id\": \"order_xxxxx\",\n  \"razorpay_payment_id\": \"pay_xxxxx\",\n  \"razorpay_signature\": \"signature_from_razorpay\",\n  \"user_id\": 15,\n  \"order_id\": 1\n}"
+							},
+							"url": {
+								"raw": "{{base_url}}/api/payment/verify",
+								"host": ["{{base_url}}"],
+								"path": ["api", "payment", "verify"]
+							}
+						}
+					},
+					{
+						"name": "Get Payment Details",
+						"request": {
+							"method": "GET",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								}
+							],
+							"url": {
+								"raw": "{{base_url}}/api/payment/details/pay_xxxxx",
+								"host": ["{{base_url}}"],
+								"path": ["api", "payment", "details", "pay_xxxxx"]
+							}
+						}
+					},
+					{
+						"name": "Get User Transactions",
+						"request": {
+							"method": "GET",
+							"header": [
+								{
+									"key": "Authorization",
+									"value": "Bearer {{user_token}}",
+									"type": "text"
+								}
+							],
+							"url": {
+								"raw": "{{base_url}}/api/payment/transactions/user/15",
+								"host": ["{{base_url}}"],
+								"path": ["api", "payment", "transactions", "user", "15"]
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Home Installation",
+					"item": [
+						{
+							"name": "Create Installation Request",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"user_id\": 15,\n  \"car_brand\": \"Toyota\",\n  \"car_model\": \"Camry\",\n  \"installation_date\": \"2025-10-15\",\n  \"address\": \"123 Main Street\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/home-installation/request",
+									"host": ["{{base_url}}"],
+									"path": ["api", "home-installation", "request"]
+								}
+							}
+						},
+						{
+							"name": "Get Car Brands",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/home-installation/car-brands",
+									"host": ["{{base_url}}"],
+									"path": ["api", "home-installation", "car-brands"]
+								}
+							}
+						},
+						{
+							"name": "Get Car Models by Brand",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/api/home-installation/car-models/Toyota",
+									"host": ["{{base_url}}"],
+									"path": ["api", "home-installation", "car-models", "Toyota"]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "3️⃣ ADMIN ROUTES (Admin JWT Required)",
+			"item": [
+				{
+					"name": "Admin Authentication",
+					"item": [
+						{
+							"name": "Admin Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.code === 200) {",
+											"    var jsonData = pm.response.json();",
+											"    pm.environment.set('admin_token', jsonData.token);",
+											"    console.log('Admin Token:', jsonData.token);",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"superadmin\",\n  \"password\": \"SuperAdmin@123\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/login",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "login"]
+								}
+							}
+						},
+						{
+							"name": "Get Admin Profile",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/profile",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "profile"]
+								}
+							}
+						},
+						{
+							"name": "Register New Admin",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"newadmin\",\n  \"email\": \"newadmin@demonoid.in\",\n  \"password\": \"Admin@123\",\n  \"role\": \"ADMIN\",\n  \"firstName\": \"New\",\n  \"lastName\": \"Admin\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/register",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "register"]
+								}
+							}
+						},
+						{
+							"name": "Get All Admins",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/all",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "all"]
+								}
+							}
+						},
+						{
+							"name": "Update Admin Status",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"isActive\": false\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/2/status",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "2", "status"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Category Management",
+					"item": [
+						{
+							"name": "Create Category",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Electronics",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "Electronic products and gadgets",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/categories",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "categories"]
+								}
+							}
+						},
+						{
+							"name": "Update Category",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Updated Electronics",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "Updated description",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/categories/1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "categories", "1"]
+								}
+							}
+						},
+						{
+							"name": "Delete Category",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/categories/1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "categories", "1"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Product Management",
+					"item": [
+						{
+							"name": "Create Product",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "Sample Product",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "Product description",
+											"type": "text"
+										},
+										{
+											"key": "basePrice",
+											"value": "99.99",
+											"type": "text"
+										},
+										{
+											"key": "c_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "images",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/products",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "products"]
+								}
+							}
+						},
+						{
+							"name": "Update Product",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Updated Product\",\n  \"description\": \"Updated description\",\n  \"basePrice\": \"129.99\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/products/1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "products", "1"]
+								}
+							}
+						},
+						{
+							"name": "Delete Product",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/products/1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "products", "1"]
+								}
+							}
+						},
+						{
+							"name": "Upload Main Image",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "image",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/products/upload/main-image",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "products", "upload", "main-image"]
+								}
+							}
+						},
+						{
+							"name": "Upload Card Image",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "image",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/products/upload/card-image",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "products", "upload", "card-image"]
+								}
+							}
+						},
+						{
+							"name": "Upload Product Images",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "images",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/products/upload/images",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "products", "upload", "images"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Carousel Management",
+					"item": [
+						{
+							"name": "Create Carousel Item",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "title",
+											"value": "Carousel Title",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "Carousel description",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/carousel",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "carousel"]
+								}
+							}
+						},
+						{
+							"name": "Update Carousel Item",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "title",
+											"value": "Updated Title",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "Updated description",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/carousel/1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "carousel", "1"]
+								}
+							}
+						},
+						{
+							"name": "Delete Carousel Item",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/carousel/1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "carousel", "1"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Hero Section Management",
+					"item": [
+						{
+							"name": "Upload Hero Videos",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "websiteVideo",
+											"type": "file",
+											"src": []
+										},
+										{
+											"key": "phoneVideo",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/hero/upload",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "hero", "upload"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Secondary Media Management",
+					"item": [
+						{
+							"name": "Upload Secondary Media",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/secondary/upload",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "secondary", "upload"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Video Management",
+					"item": [
+						{
+							"name": "Upload Video",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "video",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/videos/upload",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "videos", "upload"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Offer Management",
+					"item": [
+						{
+							"name": "Create Offer Code",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"code\": \"SAVE20\",\n  \"discount_percentage\": 20,\n  \"valid_until\": \"2025-12-31\",\n  \"max_uses\": 100\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/offers/create-offer",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "offers", "create-offer"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Home Installation Management",
+					"item": [
+						{
+							"name": "Get All Installation Requests",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/home-installation/admin/requests",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "home-installation", "admin", "requests"]
+								}
+							}
+						},
+						{
+							"name": "Get Installation Request by ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/home-installation/admin/requests/1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "home-installation", "admin", "requests", "1"]
+								}
+							}
+						},
+						{
+							"name": "Update Installation Status",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"completed\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/admin/home-installation/admin/requests/1/status",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "home-installation", "admin", "requests", "1", "status"]
+								}
+							}
+						},
+						{
+							"name": "Delete Installation Request",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/admin/home-installation/admin/requests/1",
+									"host": ["{{base_url}}"],
+									"path": ["api", "admin", "home-installation", "admin", "requests", "1"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Order Management (Admin)",
+					"item": [
+						{
+							"name": "Get All Orders",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/orders?limit=50&offset=0",
+									"host": ["{{base_url}}"],
+									"path": ["api", "orders"],
+									"query": [
+										{
+											"key": "status",
+											"value": "PENDING",
+											"disabled": true
+										},
+										{
+											"key": "payment_status",
+											"value": "UNPAID",
+											"disabled": true
+										},
+										{
+											"key": "limit",
+											"value": "50"
+										},
+										{
+											"key": "offset",
+											"value": "0"
+										}
+									]
+								}
+							}
+						},
+						{
+							"name": "Update Order Status",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"SHIPPED\",\n  \"tracking_number\": \"TRACK123456789\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/orders/1/status",
+									"host": ["{{base_url}}"],
+									"path": ["api", "orders", "1", "status"]
+								}
+							}
+						},
+						{
+							"name": "Update Payment Status",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"payment_status\": \"PAID\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/orders/1/payment-status",
+									"host": ["{{base_url}}"],
+									"path": ["api", "orders", "1", "payment-status"]
+								}
+							}
+						},
+						{
+							"name": "Get Order Statistics",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/orders/stats/summary",
+									"host": ["{{base_url}}"],
+									"path": ["api", "orders", "stats", "summary"]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "Payment Management (Admin)",
+					"item": [
+						{
+							"name": "Get All Transactions",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/payment/transactions",
+									"host": ["{{base_url}}"],
+									"path": ["api", "payment", "transactions"]
+								}
+							}
+						},
+						{
+							"name": "Refund Payment",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{admin_token}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"payment_id\": \"pay_xxxxx\",\n  \"amount\": 500.00,\n  \"notes\": {\n    \"reason\": \"Product defect\"\n  }\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/payment/refund",
+									"host": ["{{base_url}}"],
+									"path": ["api", "payment", "refund"]
+								}
+							}
+						},
+						{
+							"name": "Razorpay Webhook",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "X-Razorpay-Signature",
+										"value": "webhook_signature",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"event\": \"payment.captured\",\n  \"payload\": {\n    \"payment\": {\n      \"entity\": {\n        \"id\": \"pay_xxxxx\",\n        \"amount\": 150000,\n        \"status\": \"captured\"\n      }\n    }\n  }\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/api/payment/webhook",
+									"host": ["{{base_url}}"],
+									"path": ["api", "payment", "webhook"]
+								}
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}
+
