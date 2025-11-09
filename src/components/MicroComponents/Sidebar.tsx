@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { apiClient } from "@/utils/helper";
+import { apiConfig } from "@/utils/config";
 // import { log } from "console";
 // import api from "@/lib/api";
 
@@ -56,7 +57,7 @@ const Sidebar = ({
 
   async function getCategories() {
     try {
-      const res = await apiClient<Category[]>('categories/');
+      const res = await apiClient<Category[]>(apiConfig.endpoints.categories);
       // log("categories==", res);
       // console.log("categories==", res);
 

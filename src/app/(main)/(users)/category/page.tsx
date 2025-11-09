@@ -1,6 +1,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { apiClient } from "@/utils/helper";
+import { apiConfig } from "@/utils/config";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";
@@ -31,7 +32,7 @@ type Category = {
 };
 
 async function getCategories() {
-  const categories = await apiClient<Category[]>('categories/');
+  const categories = await apiClient<Category[]>(apiConfig.endpoints.categories);
   // console.log("categories==", categories);
   return { categories };
 }

@@ -3,7 +3,7 @@ export const baseUrl = "https://demonoid.in:3542";
 export const apiConfig = {
   baseUrl,
   endpoints: {
-    categories: '/categories/',
+    categories: '/api/categories',
     hero: '/hero',
     products: '/products',
     orders: '/orders',

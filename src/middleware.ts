@@ -20,6 +20,7 @@ const PUBLIC_ROUTES = [
   "/api/installation",
   "/api/products",
   "/api/categories",
+  "/api/product-tags",
   "/api/search",
 ];
 

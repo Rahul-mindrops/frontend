@@ -1,5 +1,6 @@
 
 import { apiClient } from "@/utils/helper";
+import { apiConfig } from "@/utils/config";
 import Image from "next/image";
 import { notFound, useRouter } from "next/navigation";
 import React, { use } from "react";
@@ -21,7 +22,7 @@ type Category = {
 };
 
 async function getProduct() {
-    const categories = await apiClient<Category[]>('categories/');
+    const categories = await apiClient<Category[]>(apiConfig.endpoints.categories);
     // console.log("categories==", categories);
     return { categories };
 }

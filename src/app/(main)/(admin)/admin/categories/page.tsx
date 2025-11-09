@@ -28,6 +28,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import * as Yup from "yup";
 import { apiClient } from "@/utils/helper";
+import { apiConfig } from "@/utils/config";
 
 const CategorySchema = Yup.object().shape({
   name: Yup.string().required("Category name is required"),
@@ -63,7 +64,7 @@ export default function CategoryListPage() {
     const fetchCategories = async () => {
       try {
         // const response = await fetch("/api/categories");
-        const response = await apiClient<Category[]>('categories');
+        const response = await apiClient<Category[]>(apiConfig.endpoints.categories);
 
         console.log("response", response);
         // const data = await response.json();
@@ -88,7 +89,7 @@ export default function CategoryListPage() {
       //   },
       //   body: JSON.stringify({ id }),
       // });
-      const response = await apiClient<Category[]>(`categories/${id}`, { method: 'DELETE' });
+      const response = await apiClient<Category[]>(`${apiConfig.endpoints.categories}/${id}`, { method: 'DELETE' });
       console.log("response", response);
 
 

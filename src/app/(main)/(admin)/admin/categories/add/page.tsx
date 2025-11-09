@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { apiClient } from "@/utils/helper";
+import { apiConfig } from "@/utils/config";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 
 import { log } from "node:console";
@@ -47,7 +48,7 @@ export default function CreateCategoryPage() {
       //   ...values,
       // });
       // const response = await apiClient<CategoryUplord[]>('http://147.93.107.197:3542/categories', { method: 'POST', body: formData, });
-      const response = await apiClient('categories', { method: 'POST', body: formData, });
+      const response = await apiClient(apiConfig.endpoints.categories, { method: 'POST', body: formData, });
       // console.log("response=====", response);
 
 
